@@ -1,5 +1,5 @@
 #include <iostream>
-using namespace std;
+using namespace std;     //cambiar las ñ para que funcione
 
 int main() { 
     string correo_dueño, correo_seguridad, correo_gerente;
