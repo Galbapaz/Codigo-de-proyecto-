@@ -1,63 +1,135 @@
 #include <iostream>
-using namespace std;     //cambiar las ñ para que funcione
+#include <string>
+#include <ctime>
 
-int main() { 
-    string correo_dueño, correo_seguridad, correo_gerente;
-    cout << "introduzca los correos" << endl; //ingresar los correos de los usuarios
-    cin >> correo_dueño >> correo_seguridad >> correo_gerente;
-    int number_dueño, number_seguridad, number_gerente;
-    cout << "introduzca los numeros de celular" << endl;
-    cin >> number_dueño >> number_seguridad >> number_gerente; //ingresar los numeros de celular de los usuarios 
-    string dueño, seguridad, gerente;
-    cout << "Introduzca los nombres de usuario" << endl;
-    cin >> dueño >> seguridad >> gerente; //Se crean los usuarios
-string contra_dueño, contra_seguridad, contra_gerente;
-    cout << "Introduzca las contraseñas" << endl;
-cin >> contra_dueño >> contra_seguridad >> contra_gerente; // Creamos las tres contraseñas
+using namespace std;
 
-cout << "Iniciar sesión" << endl;
-cout << "Usuario" << endl;
+int main() {
+    string usuario;
+    string contrasena;
 
-string usuario;
-cin >> usuario; //Introduce el usuario
+    // Registro de usuarios
+    string duenoUsuario = "dueno";
+    string duenoContrasena = "123456";
+    string guardiaUsuario = "guardia";
+    string guardiaContrasena = "abcdef";
+    string gerenteUsuario = "gerente";
+    string gerenteContrasena = "qwerty";
 
-if (usuario != dueño && usuario != seguridad && usuario != gerente) {
-    cout << "Error: Usuario incorrecto" << endl; //Si no introduces uno de los tres usuarios te saldra error
-    return 0;
-}
+    // Autenticación de usuarios
+    cout << "Inicio de Sesión" << endl;
+    cout << "Usuario: ";
+    cin >> usuario;
+    cout << "Contraseña: ";
+    cin >> contrasena;
+    cout << endl;
 
-cout << "Contraseña" << endl;
-
-string contraseña;
-cin >> contraseña;
-
-if ((usuario == dueño && contraseña == contra_dueño) ||
-    (usuario == seguridad && contraseña == contra_seguridad) ||
-    (usuario == gerente && contraseña == contra_gerente)) {
-    
-    cout << "Sesión iniciada como " << usuario << endl;
-    cout << "Tambien se registrara quien inicio sesion y cuando lo hizo."  << endl;
-    
-    string camaras;
-    cout << "Activar o Desactivar sistema" << endl;
-    cin >> camaras; //Activacion de las camaras
-
-    if (camaras == "activar") { //Indicamos lo que pasa mientras estan activas
-        cout << "Se monitorearán en tiempo real." << endl;
-        cout << "Todo será guardado y almacenado para poder revisar y analizar en caso de que pase algo." << endl;
-        cout << "Se mostrara la fecha y hora" << endl;
-        cout << "También aquellos con permiso podrán acceder a las cámaras desde un dispositivo conectado a internet." << endl;
-        cout << "Despues de las 10:30pm se activaran unos sensores." << endl;
-        cout << "Si un sensor detecta algo, se llamara a las 3 personas con acceso a las camaras" << endl;
-    } else { //Indicamos lo que pasa si las desactivan o alguna camara tiene problemas
-         cout << "Avisar al dueño, jefe de seguridad y gerente que las cámaras fueron desactivadas." << endl;
-        cout << "Avisar al dueño, jefe de seguridad y gerente que las cámaras no funcionan." << endl;
-        cout << "Si solo esta fallando una camara se notificara cual es." << endl;
+    // Verificación de credenciales
+    if (usuario == duenoUsuario && contrasena == duenoContrasena) {
+        cout << "Bienvenido, dueño del edificio." << endl;
+    } else if (usuario == guardiaUsuario && contrasena == guardiaContrasena) {
+        cout << "Bienvenido, guardia de seguridad." << endl;
+    } else if (usuario == gerenteUsuario && contrasena == gerenteContrasena) {
+        cout << "Bienvenido, gerente." << endl;
+    } else {
+        cout << "Credenciales inválidas. Acceso denegado." << endl;
+        return 0;
     }
-} else { 
-    cout << "Error: Contraseña incorrecta" << endl;
-}
+
+    // Verificación de la hora actual
+    time_t now = time(0);
+    tm* tiempoActual = localtime(&now);
+    int hora = tiempoActual->tm_hour;
+    int minuto = tiempoActual->tm_min;
+
+    bool activarSensores = false;
+
+    // Verificar si es hora de activar los sensores
+    if (hora > 22 || (hora == 22 && minuto >= 30) || hora < 6 || (hora == 6 && minuto <= 30)) {
+        activarSensores = true;
+    }
+
+    const int numCamaras = 16;
+    string estadoCamaras[numCamaras];
+
+    // Estado inicial de las cámaras
+    for (int i = 0; i < numCamaras; i++) {
+        estadoCamaras[i] = activarSensores ? "activada" : "desactivada";
+    }
+
+    // Menú de opciones
+    int opcion;
+do {
+    cout << endl;
+    cout << "Menú de opciones" << endl;
+    cout << "1. Ver estado de las cámaras" << endl;
+    cout << "2. Activar una cámara" << endl;
+    cout << "3. Desactivar una cámara" << endl;
+    cout << "4. Activar todas las cámaras" << endl;
+    cout << "5. Desactivar todas las cámaras" << endl;
+    cout << "6. Salir" << endl;
+    cout << "Ingrese una opción: ";
+    cin >> opcion;
+
+    switch (opcion) {
+        case 1: {
+            cout << "Estado de las cámaras:" << endl;
+            for (int i = 0; i < numCamaras; i++) {
+                cout << "Cámara " << (i + 1) << ": " << estadoCamaras[i] << endl;
+            }
+            break;
+        }
+        case 2: {
+            int camara;
+            cout << "Ingrese el número de cámara a activar (1-" << numCamaras << "): ";
+            cin >> camara;
+
+            if (camara >= 1 && camara <= numCamaras) {
+                estadoCamaras[camara - 1] = "activada";
+                cout << "Cámara " << camara << " activada correctamente." << endl;
+            } else {
+                cout << "Número de cámara inválido." << endl;
+            }
+            break;
+        }
+        case 3: {
+            int camara;
+            cout << "Ingrese el número de cámara a desactivar (1-" << numCamaras << "): ";
+            cin >> camara;
+
+            if (camara >= 1 && camara <= numCamaras) {
+                estadoCamaras[camara - 1] = "desactivada";
+                cout << "Cámara " << camara << " desactivada correctamente." << endl;
+            } else {
+                cout << "Número de cámara inválido." << endl;
+            }
+            break;
+        }
+        case 4: {
+            for (int i = 0; i < numCamaras; i++) {
+                estadoCamaras[i] = "activada";
+            }
+            cout << "Todas las cámaras han sido activadas correctamente." << endl;
+            break;
+        }
+        case 5: {
+            for (int i = 0; i < numCamaras; i++) {
+                estadoCamaras[i] = "desactivada";
+            }
+            cout << "Todas las cámaras han sido desactivadas correctamente." << endl;
+            break;
+        }
+        case 6: {
+            cout << "Saliendo del programa..." << endl;
+            break;
+        }
+        default:
+            cout << "Opción inválida. Por favor, ingrese una opción válida." << endl;
+            break;
+    }
+} while (opcion != 6);
 
 return 0;
 }
+
 
