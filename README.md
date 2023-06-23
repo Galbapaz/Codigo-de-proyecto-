@@ -42,11 +42,11 @@ int main() {
     int hora = tiempoActual->tm_hour;
     int minuto = tiempoActual->tm_min;
 
-    bool activarSensores = false;
+    bool activarCamaras = false;
 
-    // Verificar si es hora de activar los sensores
+    // Verificar si es hora de activar las cámaras
     if (hora > 22 || (hora == 22 && minuto >= 30) || hora < 6 || (hora == 6 && minuto <= 30)) {
-        activarSensores = true;
+        activarCamaras = true;
     }
 
     const int numCamaras = 16;
@@ -54,82 +54,121 @@ int main() {
 
     // Estado inicial de las cámaras
     for (int i = 0; i < numCamaras; i++) {
-        estadoCamaras[i] = activarSensores ? "activada" : "desactivada";
+        estadoCamaras[i] = activarCamaras ? "activada" : "desactivada";
+    }
+
+    // Verificar si es hora de activar los sensores de movimiento
+    bool activarSensores = false;
+
+    if (hora > 22 || (hora == 22 && minuto >= 30) || hora < 6 || (hora == 6 && minuto <= 30)) {
+        activarSensores = true;
+    }
+
+    const int numSensores = 16;
+    bool estadoSensores[numSensores];
+
+    // Estado inicial de los sensores de movimiento
+    for (int i = 0; i < numSensores; i++) {
+        estadoSensores[i] = activarSensores;
     }
 
     // Menú de opciones
     int opcion;
-do {
-    cout << endl;
-    cout << "Menú de opciones" << endl;
-    cout << "1. Ver estado de las cámaras" << endl;
-    cout << "2. Activar una cámara" << endl;
-    cout << "3. Desactivar una cámara" << endl;
-    cout << "4. Activar todas las cámaras" << endl;
-    cout << "5. Desactivar todas las cámaras" << endl;
-    cout << "6. Salir" << endl;
-    cout << "Ingrese una opción: ";
-    cin >> opcion;
+    do {
+        cout << endl;
+        cout << "Menú de opciones" << endl;
+        cout << "1. Ver estado de las cámaras" << endl;
+        cout << "2. Activar todas las cámaras" << endl;
+        cout << "3. Desactivar todas las cámaras" << endl;
+        cout << "4. Ver estado de los sensores de movimiento" << endl;
+        cout << "5. Activar todos los sensores de movimiento" << endl;
+        cout << "6. Desactivar todos los sensores de movimiento" << endl;
+        cout << "7. Activar un sensor de movimiento" << endl;
+        cout << "8. Desactivar un sensor de movimiento" << endl;
+        cout << "9. Salir" << endl;
+        cout << "Ingrese una opción: ";
+        cin >> opcion;
 
-    switch (opcion) {
-        case 1: {
-            cout << "Estado de las cámaras:" << endl;
-            for (int i = 0; i < numCamaras; i++) {
-                cout << "Cámara " << (i + 1) << ": " << estadoCamaras[i] << endl;
+        switch (opcion) {
+            case 1: {
+                cout << "Estado de las cámaras:" << endl;
+                for (int i = 0; i < numCamaras; i++) {
+                    cout << "Cámara " << (i + 1) << ": " << estadoCamaras[i] << endl;
+                }
+                break;
             }
-            break;
-        }
-        case 2: {
-            int camara;
-            cout << "Ingrese el número de cámara a activar (1-" << numCamaras << "): ";
-            cin >> camara;
+            case 2: {
+                for (int i = 0; i < numCamaras; i++) {
+                    estadoCamaras[i] = "activada";
+                }
+                cout << "Todas las cámaras han sido activadas correctamente." << endl;
+                break;
+            }
+            case 3: {
+                for (int i = 0; i < numCamaras; i++) {
+                    estadoCamaras[i] = "desactivada";
+                }
+                cout << "Todas las cámaras han sido desactivadas correctamente." << endl;
+                break;
+            }
+            case 4: {
+                cout << "Estado de los sensores de movimiento:" << endl;
+                for (int i = 0; i < numSensores; i++) {
+                    cout << "Sensor " << (i + 1) << ": " << (estadoSensores[i] ? "activado" : "desactivado") << endl;
+                }
+                break;
+            }
+            case 5: {
+                for (int i = 0; i < numSensores; i++) {
+                    estadoSensores[i] = true;
+                }
+                cout << "Todos los sensores de movimiento han sido activados correctamente." << endl;
+                break;
+            }
+            case 6: {
+                for (int i = 0; i < numSensores; i++) {
+                    estadoSensores[i] = false;
+                }
+                cout << "Todos los sensores de movimiento han sido desactivados correctamente." << endl;
+                break;
+            }
+            case 7: {
+                int sensor;
+                cout << "Ingrese el número de sensor a activar (1-" << numSensores << "): ";
+                cin >> sensor;
 
-            if (camara >= 1 && camara <= numCamaras) {
-                estadoCamaras[camara - 1] = "activada";
-                cout << "Cámara " << camara << " activada correctamente." << endl;
-            } else {
-                cout << "Número de cámara inválido." << endl;
+                if (sensor >= 1 && sensor <= numSensores) {
+                    estadoSensores[sensor - 1] = true;
+                    cout << "Sensor " << sensor << " activado correctamente." << endl;
+                } else {
+                    cout << "Número de sensor inválido." << endl;
+                }
+                break;
             }
-            break;
-        }
-        case 3: {
-            int camara;
-            cout << "Ingrese el número de cámara a desactivar (1-" << numCamaras << "): ";
-            cin >> camara;
+            case 8: {
+                int sensor;
+                cout << "Ingrese el número de sensor a desactivar (1-" << numSensores << "): ";
+                cin >> sensor;
 
-            if (camara >= 1 && camara <= numCamaras) {
-                estadoCamaras[camara - 1] = "desactivada";
-                cout << "Cámara " << camara << " desactivada correctamente." << endl;
-            } else {
-                cout << "Número de cámara inválido." << endl;
+                if (sensor >= 1 && sensor <= numSensores) {
+                    estadoSensores[sensor - 1] = false;
+                    cout << "Sensor " << sensor << " desactivado correctamente." << endl;
+                } else {
+                    cout << "Número de sensor inválido." << endl;
+                }
+                break;
             }
-            break;
-        }
-        case 4: {
-            for (int i = 0; i < numCamaras; i++) {
-                estadoCamaras[i] = "activada";
+            case 9: {
+                cout << "Saliendo del programa..." << endl;
+                break;
             }
-            cout << "Todas las cámaras han sido activadas correctamente." << endl;
-            break;
+            default:
+                cout << "Opción inválida. Por favor, ingrese una opción válida." << endl;
+                break;
         }
-        case 5: {
-            for (int i = 0; i < numCamaras; i++) {
-                estadoCamaras[i] = "desactivada";
-            }
-            cout << "Todas las cámaras han sido desactivadas correctamente." << endl;
-            break;
-        }
-        case 6: {
-            cout << "Saliendo del programa..." << endl;
-            break;
-        }
-        default:
-            cout << "Opción inválida. Por favor, ingrese una opción válida." << endl;
-            break;
-    }
-} while (opcion != 6);
+    } while (opcion != 9);
 
-return 0;
+    return 0;
 }
 
 
